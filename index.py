@@ -70,11 +70,14 @@ def createCollection():
 # Index the faces in a image
 @api.route("/indexface", methods=['POST'])
 def indexFace():
+    jsonData = request.json
+    fileName = jsonData["fileName"]
+    
     response = rekognition_client.index_faces(
         CollectionId='faces',
-        ExternalImageId= "GroupPhoto2.jpeg",
+        ExternalImageId= fileName,
         Image={'S3Object': {
-            'Bucket': 'python-project-gaurav', 'Name': 'GroupPhoto2.jpeg'}},
+            'Bucket': 'python-project-gaurav', 'Name': fileName}},
         QualityFilter="AUTO",
         DetectionAttributes=['ALL'])
     return jsonify(response)
@@ -82,10 +85,13 @@ def indexFace():
 # Find the faces in the collection
 @api.route("/findface", methods=["POST"])
 def findFace():
+    jsonData = request.json
+    fileName = jsonData["fileName"]
+
     response = rekognition_client.search_faces_by_image(
         CollectionId='faces',
         Image={'S3Object': {'Bucket': 'python-project-gaurav',
-                            'Name': 'original_gaurav.jpeg'}},
+                            'Name': fileName}},
     )
     return jsonify(response)
 
